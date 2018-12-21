@@ -11,7 +11,7 @@ describe('tests for method sort', () => {
   test('arr has not own property sort', () => {
     const arr = new MyArray(1, 4, 0);
 
-    expect(arr.hasOwnProperty('sort')).toBeFalsy();
+    expect(Object.prototype.hasOwnProperty.call('sort')).toBeFalsy();
   });
 
   test('throw error if comparator is not a function or undefined', () => {
@@ -25,7 +25,7 @@ describe('tests for method sort', () => {
     const comparator = jest.fn((a, b) => a - b);
 
     arr.sort(comparator);
-    
+
     expect(arr).toEqual(new MyArray(1, 3, 4));
   });
 
@@ -72,7 +72,7 @@ describe('tests for method sort', () => {
 
   test('arr length before using sort === arr length after using it', () => {
     const { length: initialLength } = new MyArray(3, 2, 1);
-    const { length: expectedLength } = new MyArray(3, 2, 1).sort();  
+    const { length: expectedLength } = new MyArray(3, 2, 1).sort();
 
     expect(initialLength).toBe(expectedLength);
   });
