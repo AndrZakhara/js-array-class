@@ -53,9 +53,7 @@ class MyArray {
   }
 
   forEach(callBack, thisArg) {
-    let context = null;
-
-    thisArg === undefined ? context = this : context = thisArg;
+    const context = thisArg ? thisArg : this;
 
     for (let i = 0; i < this.length; i++) {
       callBack.call(context, this[i], i, this);
