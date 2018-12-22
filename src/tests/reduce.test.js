@@ -18,8 +18,8 @@ describe('tests for method reduce', () => {
     const arr = new MyArray(1, 2, 3);
     const mockCallback = jest.fn();
     arr.reduce(mockCallback);
-    const newArray = new MyArray(1, 2, 3);
-    expect(arr).toEqual(newArray);
+
+    expect(arr).toEqual(new MyArray(1, 2, 3));
   });
 
   test('If callback is not a function the error should be thrown', () => {

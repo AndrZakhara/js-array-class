@@ -24,9 +24,20 @@ describe('tests for instance', () => {
   });
 
   test('Prototype have only declarated method and constructor', () => {
-    const declaratedMethods = ['constructor', 'find', 'slice', 'push', 'pop',
-      'toString', 'map', 'filter', 'forEach', 'reduce',
-      'sort', Symbol(Symbol.iterator)];
+    const declaratedMethods = [
+      'constructor',
+      'find',
+      'slice',
+      'push',
+      'pop',
+      'toString',
+      'map',
+      'filter',
+      'forEach',
+      'reduce',
+      'sort',
+      Symbol(Symbol.iterator)
+    ];
     const prototypeMethods = Reflect.ownKeys(MyArray.prototype);
 
     expect(prototypeMethods).toEqual(declaratedMethods);
