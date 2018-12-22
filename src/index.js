@@ -2,6 +2,12 @@ class MyArray {
   constructor(...rest) {
     rest !== undefined ? this.length = rest.length : this.length = 0;
 
+    if (rest.length === 1 && typeof rest[0] === 'number') {
+      this.length = rest[0];
+    } else if (rest.length === 1 && rest[0] < 0) {
+      throw new RangeError('Invalid length of array');
+    }
+
     for (let i = 0; i < this.length; i++) {
       this[i] = rest[i];
     }
