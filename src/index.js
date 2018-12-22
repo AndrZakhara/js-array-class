@@ -58,7 +58,7 @@ class MyArray {
     thisArg === undefined ? context = this : context = thisArg;
 
     for (let i = 0; i < this.length; i++) {
-      this[i] = callBack.call(context, this[i], i, this);
+      callBack.call(context, this[i], i, this);
     }
   }
 
