@@ -4,14 +4,14 @@ import MyArray from '../index';
 describe('tests for method find', () => {
   test('returns undefined if there is no such element', () => {
     const arr = new MyArray(2, 4, 5);
-    const callback = (x) => x > 10; 
+    const callback = x => x > 10;
 
     expect(arr.find(callback)).toBeUndefined();
   });
 
   test('returns the first element that satisfies the expression', () => {
     const arr = new MyArray(1, 2, 3);
-    const callback = (x)=> x > 1;
+    const callback = x => x > 1;
 
     expect(arr.find(callback)).toBe(2);
   });
@@ -22,7 +22,7 @@ describe('tests for method find', () => {
 
     expect(() => arr.find(callback)).toThrow(TypeError);
   });
-  
+
   test('expect callbacks args length to be equal 3', () => {
     const arr = new MyArray(1, 2, 3);
     const callback = jest.fn();
@@ -30,7 +30,7 @@ describe('tests for method find', () => {
 
     expect(callback.mock.calls.length).toBe(3);
   });
-  
+
   test('callback must include the originalArray as third argument', () => {
     const originArr = new MyArray(1, 4, 0);
     const callback = jest.fn();
@@ -44,7 +44,7 @@ describe('tests for method find', () => {
   test('instance has not Own Property map', () => {
     const arr = new MyArray(1, 4, 0);
 
-    expect(arr.hasOwnProperty('find')).toBeFalsy();
+    expect(Object.prototype.hasOwnProperty.call(arr, 'find')).toBeFalsy();
   });
 
   test('instance has method find', () => {

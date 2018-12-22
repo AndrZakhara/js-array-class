@@ -2,7 +2,7 @@ import MyArray from '../index';
 
 
 describe('tests for method slice', () => {
-  let arr;
+  let arr = null;
 
   beforeEach(() => {
     arr = new MyArray(1, 2, 3, 4, 5, 6, 7);
@@ -14,7 +14,7 @@ describe('tests for method slice', () => {
   });
 
   test('instance has not Own Property slice', () => {
-    expect(arr.hasOwnProperty('slice')).toBeFalsy();
+    expect(Object.prototype.hasOwnProperty.call(arr, 'slice')).toBeFalsy();
   });
 
   test('method must return new array', () => {
@@ -33,12 +33,12 @@ describe('tests for method slice', () => {
     expect(arr.slice(1)).toEqual(new MyArray(2, 3, 4, 5, 6, 7));
     expect(arr.slice(1, 3)).toEqual(new MyArray(2, 3));
   });
-  
+
   test('if index is negative start from the end', () => {
     expect(arr.slice(-3, 6)).toEqual(new MyArray(5, 6));
     expect(arr.slice(-4, -2)).toEqual(new MyArray(4, 5));
   });
-  
+
   test('if there is 1 argument copy array to end', () => {
     expect(arr.slice(3)).toEqual(new MyArray(4, 5, 6, 7));
   });

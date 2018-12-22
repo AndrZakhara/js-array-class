@@ -1,4 +1,4 @@
-import MyArray from "../index";
+import MyArray from '../index';
 
 
 describe('tests for spread', () => {
@@ -7,15 +7,15 @@ describe('tests for spread', () => {
 
     expect(arr[Symbol.iterator]).toBeInstanceOf(Function);
   });
-  
+
   test('instance has not own property [Symbol.iterator]', () => {
     const arr = new MyArray(1, 2, 3);
 
-    expect(arr.hasOwnProperty('Symbol.iterator')).toBeFalsy();
+    expect(Object.prototype.hasOwnProperty.call(arr, 'Symbol.iterator')).toBeFalsy();
   });
 
   test('array must work with operator spread', () => {
-    const arr2 = new MyArray (1, 4, { name: 'ivan' });
+    const arr2 = new MyArray(1, 4, { name: 'ivan' });
     const arr1 = [0, ...arr2];
 
     expect(arr1[0]).toBe(0);

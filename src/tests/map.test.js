@@ -11,7 +11,7 @@ describe('tests for method map', () => {
   test('instance has not Own Property map', () => {
     const arr = new MyArray(1, 4, 0);
 
-    expect(arr.hasOwnProperty('map')).toBeFalsy();
+    expect(Object.prototype.hasOwnProperty.call(arr, 'map')).toBeFalsy();
   });
 
   test('callback must include the originalArray as third argument', () => {
@@ -27,7 +27,7 @@ describe('tests for method map', () => {
   test('method map must return an instance of MyArray', () => {
     const arr = new MyArray(1, 4, 0);
 
-    expect(arr.map((num) => num + 5)).toBeInstanceOf(MyArray);
+    expect(arr.map(num => num + 5).toBeInstanceOf(MyArray));
   });
 
   test('should use callback for each element of array', () => {
@@ -42,7 +42,7 @@ describe('tests for method map', () => {
 
   test('method map shouldn\'t mutate initial array', () => {
     const arr = new MyArray(5, 4, 3);
-    arr.map((num) => num + 1);
+    arr.map(num => num + 1);
 
     expect(arr).toEqual(new MyArray(5, 4, 3));
   });
@@ -50,8 +50,8 @@ describe('tests for method map', () => {
   test('returns an empty array when called on empty array', () => {
     const arr = new MyArray();
 
-    expect(arr.map((num) => num + 1)).toEqual(new MyArray());
-    expect(arr.map((num) => num + 1).length).toBe(0);
+    expect(arr.map(num => num + 1)).toEqual(new MyArray());
+    expect(arr.map(num => num + 1).length).toBe(0);
   });
 
   test('if custom context doesn\'t provided, use current context', () => {
@@ -59,10 +59,10 @@ describe('tests for method map', () => {
     const testArr = [];
     const user = {
       name: 'ivan',
-      testMap () {
+      testMap() {
         arr.map(() => testArr.push(this.name));
       }
-    }
+    };
 
     user.testMap();
 
@@ -72,7 +72,7 @@ describe('tests for method map', () => {
   test('thisArg is set as \'this\' of mapFunction properly for map method', () => {
     const originArr = new MyArray(1, 4, 0);
     const customContext = { test: 10 };
-      
+
     function callback() {
       return this.test;
     }
@@ -92,7 +92,7 @@ describe('tests for method map', () => {
 
   test('should throw error if callback is not a function', () => {
     const callback = '';
-    const arr = new MyArray(1, 2, 3); 
+    const arr = new MyArray(1, 2, 3);
 
     expect(() => arr.map(callback)).toThrow(TypeError);
   });
