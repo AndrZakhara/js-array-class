@@ -61,16 +61,18 @@ class MyArray {
   }
 
   map(callback, thisArg) {
-    let context = null;
     const newArray = new MyArray();
+    const context = thisArg ? thisArg : this;
 
-    thisArg === undefined ? context = this : context = thisArg;
-    callback.apply(context);
-
-    for (let i = 0; i < this.length; i++) {
-      newArray[i] = callback(this[i], i, this);
+    if (callback && typeof callback === 'function') {
+      for (let i = 0; i < this.length; i++) {
+        newArray[i] = callback.call(context, this[i], i, this);
+        newArray.length += 1;
+      }
+    } else {
+      const message = `${callback} is not a function at MyArray.map`;
+      throw new TypeError(message);
     }
-    newArray.length = context.length;
 
     return newArray;
   }
