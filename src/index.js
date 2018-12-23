@@ -47,7 +47,7 @@ class MyArray {
     const element = this[index];
 
     delete this[index];
-    this.length -= 1;
+    this.length > 0 ? this.length -= 1 : this.length = 0;
 
     return element;
   }
