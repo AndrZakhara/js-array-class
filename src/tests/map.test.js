@@ -27,7 +27,7 @@ describe('tests for method map', () => {
   test('method map must return an instance of MyArray', () => {
     const arr = new MyArray(1, 4, 0);
 
-    expect(arr.map(num => num + 5).toBeInstanceOf(MyArray));
+    expect(arr.map(num => num + 5)).toBeInstanceOf(MyArray);
   });
 
   test('should use callback for each element of array', () => {
