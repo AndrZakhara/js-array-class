@@ -158,6 +158,12 @@ class MyArray {
       return this;
     }
   }
+
+  * [Symbol.iterator]() {
+    for (let i = 0; i < this.length; i++) {
+      yield this[i];
+    }
+  }
 }
 
 export default MyArray;
