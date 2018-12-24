@@ -24,23 +24,24 @@ describe('tests for instance', () => {
   });
 
   test('Prototype have only declarated method and constructor', () => {
-    const declaratedMethods = [
-      'constructor',
-      'find',
-      'slice',
-      'push',
-      'pop',
-      'toString',
-      'map',
-      'filter',
-      'forEach',
-      'reduce',
-      'sort',
-      Symbol(Symbol.iterator)
-    ];
-    const prototypeMethods = Reflect.ownKeys(MyArray.prototype);
+    const declaratedMethods = {
+      'constructor': true,
+      'find': true,
+      'slice': true,
+      'pop': true,
+      'push': true,
+      'toString': true,
+      'map': true,
+      'filter': true,
+      'forEach': true,
+      'reduce': true,
+      'sort': true,
+      [Symbol.iterator]: true
+    };
 
-    expect(prototypeMethods).toEqual(declaratedMethods);
+    Reflect.ownKeys(MyArray.prototype).forEach(item => delete declaratedMethods[item]);
+    expect(declaratedMethods).toEqual({});
+    expect(Reflect.ownKeys(MyArray.prototype).length).toBe(12);
   });
 
   test('Class has only declarated static method and common like \'length\', \'prototype\', \'from\', \'name\'', () => {
