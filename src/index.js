@@ -159,6 +159,25 @@ class MyArray {
     }
   }
 
+  find(callback, thisArg) {
+    const context = thisArg ? thisArg : this;
+    const initialArray = context.map(i => i);
+
+    if (callback && typeof callback === 'function') {
+      for (let i = 0; i < initialArray.length; i++) {
+        if (callback(initialArray[i], i, context)) {
+          return initialArray[i];
+        }
+      }
+    } else {
+      const message = `${callback} is not a function at MyArray.map`;
+
+      throw new TypeError(message);
+    }
+
+    return undefined;
+  }
+
   * [Symbol.iterator]() {
     for (let i = 0; i < this.length; i++) {
       yield this[i];
