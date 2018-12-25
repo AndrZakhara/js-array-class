@@ -178,6 +178,28 @@ class MyArray {
     return undefined;
   }
 
+  slice(begin, end) {
+    const newArray = new MyArray();
+    let beginValue = begin ? begin : 0;
+    let endValue = end && Math.abs(end) < this.length ? end : this.length;
+
+    if (beginValue < 0) {
+      beginValue = this.length + begin;
+    }
+
+    if (endValue < 0) {
+      endValue = this.length + end;
+    }
+
+    for (let i = beginValue, k = 0; i < endValue; i++) {
+      newArray[k] = this[i];
+      k += 1;
+      newArray.length += 1;
+    }
+
+    return newArray;
+  }
+
   * [Symbol.iterator]() {
     for (let i = 0; i < this.length; i++) {
       yield this[i];
