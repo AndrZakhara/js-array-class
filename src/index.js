@@ -80,18 +80,20 @@ class MyArray {
   }
 
   reduce(callback, initialValue) {
-    let accumulator = null;
-    let previousValue = null;
+    if (!callback || typeof callback !== 'function') {
+      const message = `${callback} is not a function at MyArray.reduce`;
 
-    initialValue !== undefined ? accumulator = initialValue : accumulator = 0;
-    previousValue = accumulator;
-    callback.apply(this);
-
-    for (let i = 0; i < this.length; i++) {
-      previousValue = callback(previousValue, this[i], i, this);
+      throw new TypeError(message);
     }
 
-    return previousValue;
+    let accumulator = initialValue || initialValue !== undefined ? initialValue : this[0];
+    let i = initialValue || initialValue !== undefined ? 0 : 1;
+
+    for (i; i < this.length; i++) {
+      accumulator = callback.call(accumulator, this[i], i, this);
+    }
+
+    return accumulator;
   }
 
   filter(callback, thisArg) {
