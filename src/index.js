@@ -82,15 +82,26 @@ class MyArray {
   reduce(callback, initialValue) {
     if (!callback || typeof callback !== 'function') {
       const message = `${callback} is not a function at MyArray.reduce`;
-
       throw new TypeError(message);
     }
 
-    let accumulator = initialValue || initialValue !== undefined ? initialValue : this[0];
-    let i = initialValue || initialValue !== undefined ? 0 : 1;
+    if (this.length === 0 && !initialValue) {
+      throw new TypeError('Method reduce called on null or undefined');
+    }
+
+    if (this.length === 1 && !initialValue) {
+      return this[0];
+    }
+
+    if (this.length === 0 && initialValue) {
+      return initialValue;
+    }
+
+    let accumulator = typeof initialValue !== 'undefined' ? initialValue : this[0];
+    let i = typeof initialValue !== 'undefined' ? 0 : 1;
 
     for (i; i < this.length; i++) {
-      accumulator = callback.call(accumulator, this[i], i, this);
+      accumulator = callback(accumulator, this[i], i, this);
     }
 
     return accumulator;
