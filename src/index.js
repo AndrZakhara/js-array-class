@@ -51,7 +51,9 @@ class MyArray {
   }
 
   forEach(callBack, thisArg = this) {
-    for (let i = 0; i < this.length; i++) {
+    const { length } = this;
+
+    for (let i = 0; i < length; i++) {
       callBack.call(thisArg, this[i], i, this);
     }
   }
@@ -92,8 +94,9 @@ class MyArray {
 
     let accumulator = initialValue !== undefined ? initialValue : this[0];
     let i = initialValue !== undefined ? 0 : 1;
+    const { length } = this;
 
-    for (i; i < this.length; i++) {
+    for (i; i < length; i++) {
       accumulator = callback(accumulator, this[i], i, this);
     }
 
@@ -104,8 +107,9 @@ class MyArray {
     const newArray = new MyArray();
     let boolean = null;
     let k = 0;
+    const { length } = this;
 
-    for (let i = 0; i < this.length; i++) {
+    for (let i = 0; i < length; i++) {
       boolean = callback.call(thisArg, this[i], i, this);
 
       if (boolean) {
@@ -163,10 +167,10 @@ class MyArray {
   }
 
   find(callback, thisArg = this) {
-    const initialLength = this.length;
+    const { length } = this;
 
     if (callback && typeof callback === 'function') {
-      for (let i = 0; i < initialLength; i++) {
+      for (let i = 0; i < length; i++) {
         if (callback.call(thisArg, thisArg[i], i, thisArg)) {
           return thisArg[i];
         }
