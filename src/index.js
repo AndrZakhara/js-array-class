@@ -105,14 +105,14 @@ class MyArray {
 
   filter(callback, thisArg = this) {
     const newArray = new MyArray();
-    let boolean = null;
+    let isTarget = null;
     let k = 0;
     const { length } = this;
 
     for (let i = 0; i < length; i++) {
-      boolean = callback.call(thisArg, this[i], i, this);
+      isTarget = callback.call(thisArg, this[i], i, this);
 
-      if (boolean) {
+      if (isTarget) {
         newArray[k] = this[i];
         k += 1;
         newArray.length += 1;
