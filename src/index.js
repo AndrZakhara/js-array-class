@@ -19,15 +19,15 @@ class MyArray {
     if (callback) {
       for (let i = 0; i < arrayLike.length; i++) {
         newArray[i] = callback.call(thisArg, arrayLike[i], i, arrayLike);
-        newArray.length += 1;
       }
     }
     else {
       for (let i = 0; i < arrayLike.length; i++) {
         newArray[i] = arrayLike[i];
-        newArray.length += 1;
       }
     }
+
+    newArray.length = arrayLike.length;
 
     return newArray;
   }
@@ -82,14 +82,6 @@ class MyArray {
 
     if (this.length === 0 && !initialValue) {
       throw new TypeError('Method reduce called on null or undefined');
-    }
-
-    if (this.length === 1 && !initialValue) {
-      return this[0];
-    }
-
-    if (this.length === 0 && initialValue) {
-      return initialValue;
     }
 
     let accumulator = initialValue !== undefined ? initialValue : this[0];
