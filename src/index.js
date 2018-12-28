@@ -9,28 +9,25 @@ class MyArray {
     }
 
     for (let i = 0; i < this.length; i++) {
-      this[i] = rest[i];
+      this[i] = rest.length === 1 && typeof rest[0] === 'number' ? i : rest[i];
     }
   }
 
-  static from(arrayLike, callback, thisArg) {
-    let context = null;
+  static from(arrayLike, callback, thisArg = this) {
     const newArray = new MyArray();
-
-    thisArg === undefined ? context = arrayLike : context = thisArg;
 
     if (callback) {
       for (let i = 0; i < arrayLike.length; i++) {
-        newArray[i] = callback.call(context, arrayLike[i], i, arrayLike);
-        newArray.length += 1;
+        newArray[i] = callback.call(thisArg, arrayLike[i], i, arrayLike);
       }
     }
     else {
       for (let i = 0; i < arrayLike.length; i++) {
         newArray[i] = arrayLike[i];
-        newArray.length += 1;
       }
     }
+
+    newArray.length = arrayLike.length;
 
     return newArray;
   }
@@ -45,30 +42,28 @@ class MyArray {
   }
 
   pop() {
-    const index = this.length - 1;
-    const element = this[index];
+    const element = this[this.length - 1];
 
-    delete this[index];
+    delete this[this.length - 1];
     this.length > 0 ? this.length -= 1 : this.length = 0;
 
     return element;
   }
 
-  forEach(callBack, thisArg) {
-    const context = thisArg ? thisArg : this;
+  forEach(callBack, thisArg = this) {
+    const { length } = this;
 
-    for (let i = 0; i < this.length; i++) {
-      callBack.call(context, this[i], i, this);
+    for (let i = 0; i < length; i++) {
+      callBack.call(thisArg, this[i], i, this);
     }
   }
 
-  map(callback, thisArg) {
+  map(callback, thisArg = this) {
     const newArray = new MyArray();
-    const context = thisArg ? thisArg : this;
 
     if (callback && typeof callback === 'function') {
       for (let i = 0; i < this.length; i++) {
-        newArray[i] = callback.call(context, this[i], i, this);
+        newArray[i] = callback.call(thisArg, this[i], i, this);
         newArray.length += 1;
       }
     } else {
@@ -89,36 +84,27 @@ class MyArray {
       throw new TypeError('Method reduce called on null or undefined');
     }
 
-    if (this.length === 1 && !initialValue) {
-      return this[0];
-    }
+    let accumulator = initialValue !== undefined ? initialValue : this[0];
+    let i = initialValue !== undefined ? 0 : 1;
+    const { length } = this;
 
-    if (this.length === 0 && initialValue) {
-      return initialValue;
-    }
-
-    let accumulator = typeof initialValue !== 'undefined' ? initialValue : this[0];
-    let i = typeof initialValue !== 'undefined' ? 0 : 1;
-
-    for (i; i < this.length; i++) {
+    for (i; i < length; i++) {
       accumulator = callback(accumulator, this[i], i, this);
     }
 
     return accumulator;
   }
 
-  filter(callback, thisArg) {
-    let context = null;
+  filter(callback, thisArg = this) {
     const newArray = new MyArray();
-    let boolean = null;
+    let isTarget = null;
     let k = 0;
+    const { length } = this;
 
-    thisArg === undefined ? context = this : context = thisArg;
+    for (let i = 0; i < length; i++) {
+      isTarget = callback.call(thisArg, this[i], i, this);
 
-    for (let i = 0; i < this.length; i++) {
-      boolean = callback.call(context, this[i], i, this);
-
-      if (boolean) {
+      if (isTarget) {
         newArray[k] = this[i];
         k += 1;
         newArray.length += 1;
@@ -172,14 +158,13 @@ class MyArray {
     }
   }
 
-  find(callback, thisArg) {
-    const context = thisArg ? thisArg : this;
-    const initialArray = context.map(i => i);
+  find(callback, thisArg = this) {
+    const { length } = this;
 
     if (callback && typeof callback === 'function') {
-      for (let i = 0; i < initialArray.length; i++) {
-        if (callback(initialArray[i], i, context)) {
-          return initialArray[i];
+      for (let i = 0; i < length; i++) {
+        if (callback.call(thisArg, thisArg[i], i, thisArg)) {
+          return thisArg[i];
         }
       }
     } else {
