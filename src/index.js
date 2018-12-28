@@ -163,12 +163,12 @@ class MyArray {
   }
 
   find(callback, thisArg = this) {
-    const initialArray = thisArg.map(i => i);
+    const initialLength = this.length;
 
     if (callback && typeof callback === 'function') {
-      for (let i = 0; i < initialArray.length; i++) {
-        if (callback.call(thisArg, initialArray[i], i, thisArg)) {
-          return initialArray[i];
+      for (let i = 0; i < initialLength; i++) {
+        if (callback.call(thisArg, thisArg[i], i, thisArg)) {
+          return thisArg[i];
         }
       }
     } else {
