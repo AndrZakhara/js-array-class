@@ -1,23 +1,21 @@
 class MyArray {
   constructor(...rest) {
-    rest !== undefined ? this.length = rest.length : this.length = 0;
-
-    if (rest.length === 1 && typeof rest[0] === 'number') {
-      this.length = rest[0];
-    } else if (rest.length === 1 && rest[0] < 0) {
+    if (rest.length === 1 && rest[0] < 0) {
       throw new RangeError('Invalid length of array');
-    }
+    } else if (rest.length === 1 && typeof rest[0] === 'number') {
+      this.length = rest[0];
+    } else {
+      this.length = rest.length;
 
-    for (let i = 0; i < this.length; i++) {
-      this[i] = rest[i];
+      for (let i = 0; i < this.length; i++) {
+        this[i] = rest[i];
+      }
     }
   }
 
   static from(arrayLike, callback, thisArg) {
-    let context = null;
     const newArray = new MyArray();
-
-    thisArg === undefined ? context = arrayLike : context = thisArg;
+    const context = thisArg || arrayLike;
 
     if (callback) {
       for (let i = 0; i < arrayLike.length; i++) {
@@ -55,25 +53,24 @@ class MyArray {
   }
 
   forEach(callBack, thisArg) {
-    const context = thisArg ? thisArg : this;
+    const context = thisArg || this;
 
     for (let i = 0; i < this.length; i++) {
       callBack.call(context, this[i], i, this);
     }
   }
 
-  map(callback, thisArg) {
+  map(callback, thisArg = this) {
     const newArray = new MyArray();
-    const context = thisArg ? thisArg : this;
 
-    if (callback && typeof callback === 'function') {
-      for (let i = 0; i < this.length; i++) {
-        newArray[i] = callback.call(context, this[i], i, this);
-        newArray.length += 1;
-      }
-    } else {
+    if (!callback && typeof callback !== 'function') {
       const message = `${callback} is not a function at MyArray.map`;
       throw new TypeError(message);
+    } else {
+      for (let i = 0; i < this.length; i++) {
+        newArray[i] = callback.call(thisArg, this[i], i, this);
+        newArray.length += 1;
+      }
     }
 
     return newArray;
@@ -89,111 +86,86 @@ class MyArray {
       throw new TypeError('Method reduce called on null or undefined');
     }
 
-    if (this.length === 1 && !initialValue) {
-      return this[0];
-    }
+    let accumulator = initialValue !== undefined ? initialValue : this[0];
 
-    if (this.length === 0 && initialValue) {
-      return initialValue;
-    }
-
-    let accumulator = typeof initialValue !== 'undefined' ? initialValue : this[0];
-    let i = typeof initialValue !== 'undefined' ? 0 : 1;
-
-    for (i; i < this.length; i++) {
+    for (let i = initialValue !== undefined ? 0 : 1; i < this.length; i++) {
       accumulator = callback(accumulator, this[i], i, this);
     }
 
     return accumulator;
   }
 
-  filter(callback, thisArg) {
-    let context = null;
-    const newArray = new MyArray();
-    let boolean = null;
-    let k = 0;
-
-    thisArg === undefined ? context = this : context = thisArg;
+  filter(callback, thisArg = this) {
+    const resultArr = new MyArray();
 
     for (let i = 0; i < this.length; i++) {
-      boolean = callback.call(context, this[i], i, this);
-
-      if (boolean) {
-        newArray[k] = this[i];
-        k += 1;
-        newArray.length += 1;
+      if (callback.call(thisArg, this[i], i, this)) {
+        resultArr[resultArr.length] = this[i];
+        resultArr.length += 1;
       }
     }
-
-    return newArray;
+    return resultArr;
   }
 
   toString() {
-    let stringResult = '';
-    const stringElement = ',';
+    let newStr = '';
 
-    for (let i = 0; i < this.length; i++) {
-      (i !== this.length - 1) ? stringResult += this[i] + stringElement : stringResult += this[i];
+    for (let i = 0; i < this.length - 1; i++) {
+      newStr += `${this[i]},`;
     }
 
-    return stringResult;
+    newStr += this[this.length - 1];
+
+    return this.length === 0 ? '' : newStr;
   }
 
-  sort(compareFunction) {
-    if (compareFunction) {
-      let element = null;
+  sort(callback) {
+    let cb = callback;
 
-      for (let j = this.length; j > 1; j--) {
-        for (let i = 0; i < this.length - 1; i++) {
-          if (compareFunction(this[i], this[i + 1]) > 0) {
-            element = this[i];
-            this[i] = this[i + 1];
-            this[i + 1] = element;
-          }
+    if (!cb) {
+      cb = (a, b) => {
+        const a1 = String(a);
+        const b1 = String(b);
+
+        if (a1 > b1) {
+          return 1;
+        } else if (b1 > a1) {
+          return -1;
+        } else {
+          return 0;
         }
-      }
-
-      return this;
+      };
     }
-    else {
-      for (let i = 1; i < this.length; i++) {
-        const currentElement = this[i];
-        let j = i;
 
-        while (j > 0 && String(this[j - 1]) > String(currentElement)) {
-          this[j] = this[j - 1];
-          j -= 1;
-        }
+    for (let i = 0; i < this.length; i++) {
+      const swapElem = this[i];
+      let lastValue = i - 1;
 
-        this[j] = currentElement;
+      while (lastValue >= 0 && cb(this[lastValue], swapElem) > 0) {
+        this[lastValue + 1] = this[lastValue];
+        lastValue -= 1;
       }
-
-      return this;
+      this[lastValue + 1] = swapElem;
     }
+
+    return this;
   }
 
   find(callback, thisArg) {
-    const context = thisArg ? thisArg : this;
-    const initialArray = context.map(i => i);
+    let elemFind = null;
 
-    if (callback && typeof callback === 'function') {
-      for (let i = 0; i < initialArray.length; i++) {
-        if (callback(initialArray[i], i, context)) {
-          return initialArray[i];
-        }
+    for (let i = 0; i < this.length; i++) {
+      elemFind = this[i];
+
+      if (callback.call(thisArg, this[i], i, this)) {
+        return elemFind;
       }
-    } else {
-      const message = `${callback} is not a function at MyArray.map`;
-
-      throw new TypeError(message);
     }
-
-    return undefined;
   }
 
   slice(begin, end) {
     const newArray = new MyArray();
-    let beginValue = begin ? begin : 0;
+    let beginValue = begin || 0;
     let endValue = end && Math.abs(end) < this.length ? end : this.length;
 
     if (beginValue < 0) {
@@ -205,8 +177,7 @@ class MyArray {
     }
 
     for (let i = beginValue, k = 0; i < endValue; i++) {
-      newArray[k] = this[i];
-      k += 1;
+      newArray[newArray.length] = this[i];
       newArray.length += 1;
     }
 
