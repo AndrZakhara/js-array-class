@@ -19,16 +19,16 @@ class MyArray {
 
     if (callback) {
       for (let i = 0; i < arrayLike.length; i++) {
-        newArray[i] = callback.call(thisArg, arrayLike[i], i, arrayLike);
+        newArray[i] = callback.call(context, arrayLike[i], i, arrayLike);
+        newArray.length += 1;
       }
     }
     else {
       for (let i = 0; i < arrayLike.length; i++) {
         newArray[i] = arrayLike[i];
+        newArray.length += 1;
       }
     }
-
-    newArray.length = arrayLike.length;
 
     return newArray;
   }
@@ -43,9 +43,10 @@ class MyArray {
   }
 
   pop() {
-    const element = this[this.length - 1];
+    const index = this.length - 1;
+    const element = this[index];
 
-    delete this[this.length - 1];
+    delete this[index];
     this.length > 0 ? this.length -= 1 : this.length = 0;
 
     return element;
@@ -54,9 +55,8 @@ class MyArray {
   forEach(callBack, thisArg) {
     const context = thisArg || this;
 
-
-    for (let i = 0; i < length; i++) {
-      callBack.call(thisArg, this[i], i, this);
+    for (let i = 0; i < this.length; i++) {
+      callBack.call(context, this[i], i, this);
     }
   }
 
