@@ -176,7 +176,7 @@ class MyArray {
       endValue = this.length + end;
     }
 
-    for (let i = beginValue, k = 0; i < endValue; i++) {
+    for (let i = beginValue; i < endValue; i++) {
       newArray[newArray.length] = this[i];
       newArray.length += 1;
     }
