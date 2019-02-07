@@ -1,38 +1,22 @@
-interface IMyArray<T> {
-  length:number;
-  [index: number]: T;
-  forEach(callBack: { call: (arg0: MyArray<T>, arg1: T, arg2: number, arg3: MyArray<T>) => void; }, thisArg?: MyArray<T>):void;
-  slice(begin:number, end:number):MyArray<T>;
-  map<TU>(callback: { call: (arg0: MyArray<T>, arg1: T, arg2: number, arg3: MyArray<T>) => TU; }, thisArg?:MyArray<T>):MyArray<TU>
-  reduce(callback: (arg0: T, arg1: T, arg2: number, arg3: MyArray<T>) => T, initialValue: T): T;
-  pop():T;
-  push(...rest:T[]):number;
-};
-
-interface FilterFunction<T> extends CallableFunction {
-(arg1: T, arg2: number, arg3: MyArray<T>): boolean;
-}
-
-class MyArray<T> implements IMyArray<T> {
-  length: number;
-  [index: number]: T;
-
-  constructor(...rest: T[]|number[]) {
+class MyArray {
+  constructor(...rest) {
     if (rest.length === 1 && rest[0] < 0) {
       throw new RangeError('Invalid length of array');
-    } else if (rest.length === 1 && typeof rest[0] === 'number') {
-      this.length = rest[0] as number;
-    } else {
+    }
+    else if (rest.length === 1 && typeof rest[0] === 'number') {
+      this.length = rest[0];
+    }
+    else {
       this.length = rest.length;
 
       for (let i = 0; i < this.length; i++) {
-        this[i] = <T>rest[i];
+        this[i] = rest[i];
       }
     }
   }
 
-  static from<T>(arrayLike: T[], callback: { call: (arg0: T[], arg1: T, arg2: number, arg3: T[]) => any; }, thisArg: T[]) {
-    const newArray = new MyArray<T>();
+  static from(arrayLike, callback, thisArg) {
+    const newArray = new MyArray();
     const context = thisArg || arrayLike;
 
     if (callback) {
@@ -47,30 +31,26 @@ class MyArray<T> implements IMyArray<T> {
         newArray.length += 1;
       }
     }
-
     return newArray;
   }
 
-  push(...rest:T[]):number { // надо проверить
-    for (let i:number = 0; i < rest.length; i++) {
+  push(...rest) {
+    for (let i = 0; i < rest.length; i++) {
       this[this.length] = rest[i];
       this.length = this.length + 1;
     }
-
     return this.length;
   }
 
-  pop():T {
-    const index:number = this.length - 1;
-    const element:T = this[index];
-
+  pop() {
+    const index = this.length - 1;
+    const element = this[index];
     delete this[index];
     this.length > 0 ? this.length -= 1 : this.length = 0;
-
     return element;
   }
 
-  forEach(callBack: { call: (arg0: MyArray<T>, arg1: T, arg2: number, arg3: MyArray<T>) => void; }, thisArg?: this):void {
+  forEach(callBack, thisArg) {
     const context = thisArg || this;
 
     for (let i = 0; i < this.length; i++) {
@@ -78,23 +58,23 @@ class MyArray<T> implements IMyArray<T> {
     }
   }
 
-  map<TU>(callback: { call: (arg0: MyArray<T>, arg1: T, arg2: number, arg3: MyArray<T>) => TU; }, thisArg = this):MyArray<TU> {
-    const newArray = new MyArray<TU>();
+  map(callback, thisArg = this) {
+    const newArray = new MyArray();
 
     if (!callback && typeof callback !== 'function') {
-      const message:string = `${callback} is not a function at MyArray.map`;
+      const message = `${callback} is not a function at MyArray.map`;
       throw new TypeError(message);
-    } else {
-      for (let i:number = 0; i < this.length; i++) {
+    }
+    else {
+      for (let i = 0; i < this.length; i++) {
         newArray[i] = callback.call(thisArg, this[i], i, this);
         newArray.length += 1;
       }
     }
-
     return newArray;
   }
 
-  reduce(callback: (arg0: T, arg1: T, arg2: number, arg3: MyArray<T>) => T, initialValue: T): T {
+  reduce(callback, initialValue) {
     if (!callback || typeof callback !== 'function') {
       const message = `${callback} is not a function at MyArray.reduce`;
       throw new TypeError(message);
@@ -109,12 +89,10 @@ class MyArray<T> implements IMyArray<T> {
     for (let i = initialValue !== undefined ? 0 : 1; i < this.length; i++) {
       accumulator = callback(accumulator, this[i], i, this);
     }
-
     return accumulator;
   }
-
-  filter(callback: FilterFunction<T>, thisArg = this) {
-    const resultArr = new MyArray<T>();
+  filter(callback, thisArg = this) {
+    const resultArr = new MyArray();
 
     for (let i = 0; i < this.length; i++) {
       if (callback.call(thisArg, this[i], i, this)) {
@@ -125,31 +103,30 @@ class MyArray<T> implements IMyArray<T> {
     return resultArr;
   }
 
-  toString():string {
-    let newStr:string = '';
+  toString() {
+    let newStr = '';
 
     for (let i = 0; i < this.length - 1; i++) {
       newStr += `${this[i]},`;
     }
-
     newStr += this[this.length - 1];
-
     return this.length === 0 ? '' : newStr;
   }
-
-  sort(callback: (arg0: T, arg1: T) => number) {
+  sort(callback) {
     let cb = callback;
 
     if (!cb) {
       cb = (a, b) => {
-        const a1:string = String(a);
-        const b1:string = String(b);
+        const a1 = String(a);
+        const b1 = String(b);
 
         if (a1 > b1) {
           return 1;
-        } else if (b1 > a1) {
+        }
+        else if (b1 > a1) {
           return -1;
-        } else {
+        }
+        else {
           return 0;
         }
       };
@@ -165,11 +142,9 @@ class MyArray<T> implements IMyArray<T> {
       }
       this[lastValue + 1] = swapElem;
     }
-
     return this;
   }
-
-  find(callback: { call: (arg0: MyArray<T>, arg1: T, arg2: number, arg3: MyArray<T>) => T }, thisArg: MyArray<T>) {
+  find(callback, thisArg) {
     let elemFind = null;
 
     for (let i = 0; i < this.length; i++) {
@@ -180,9 +155,8 @@ class MyArray<T> implements IMyArray<T> {
       }
     }
   }
-
-  slice(begin:number, end:number) { // сделано
-    const newArray = new MyArray<T>();
+  slice(begin, end) {
+    const newArray = new MyArray();
     let beginValue = begin || 0;
     let endValue = end && Math.abs(end) < this.length ? end : this.length;
 
@@ -208,5 +182,4 @@ class MyArray<T> implements IMyArray<T> {
     }
   }
 }
-
 export default MyArray;
